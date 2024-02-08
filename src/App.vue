@@ -1,26 +1,24 @@
 <template>
   <div class="app">
-    <ComponentFooter/>
-    <NavBarComponent/>
-    <router-view/>
+    <ComponentFooter />
+    <ComponentList />
+    <router-view />
   </div>
 </template>
 
 <script>
-import NavBarComponent from './components/NavBarComponent.vue';
 import ComponentFooter from './components/ComponentFooter.vue';
-
+import ComponentList from './components/ComponentList.vue';
 export default {
-  components:{
-    NavBarComponent,
+  components: {
     ComponentFooter,
+    ComponentList
   },
 
 }
 </script>
 
 <style>
-
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

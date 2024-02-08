@@ -1,7 +1,9 @@
 <template>
-    <div class="body-list-title">
-        <div class="title_list">
-            <h1>{{ this.$route.params.id }}</h1>
+    <div class="body-list-title margen">
+        <div class="body-boton-agregar">
+            <div class="boton-agregar">
+                <button class="waves-effect waves-light-green btn blue">Nuevo Producto</button>
+            </div>
         </div>
         <div class="tabla">
             <table class="striped">
@@ -10,6 +12,7 @@
                         <td>Nombre</td>
                         <td>Precio de Compra</td>
                         <td>Precio de Venta</td>
+                        <td colspan="3">Botones </td>
                     </tr>
                 </thead>
                 <tbody>
@@ -17,6 +20,9 @@
                         <td> {{ item.nombre }}</td>
                         <td> {{ item.precio_de_compra }}</td>
                         <td> {{ item.precio_de_venta }}</td>
+                        <td> <button class="waves-effect waves-light btn-small">Detalle</button> </td>
+                        <td> <button class="waves-effect waves-light btn-small">Editar</button> </td>
+                        <td> <button class="waves-effect waves-light btn-small">Eliminar</button> </td>
                     </tr>
                 </tbody>
             </table>
@@ -42,7 +48,7 @@ export default {
     },
     methods: {
         obtenerDatos() {
-            axios.get("http://127.0.0.1:8000/producto/listaTipo/1/" + this.$route.params.id).then((response) => {
+            axios.get("http://127.0.0.1:8000/producto/lista/1/").then((response) => {
                 this.lista = response.data.items;
             }).catch((error) => {
                 this.$swal('Error', error.response.data.error, 'error')
@@ -53,3 +59,15 @@ export default {
 }
 </script>
 
+<style>
+.body-boton-agregar {
+    text-align: right;
+    margin-bottom: 3%;
+    margin-top: 3%;
+}
+
+.margen {
+    margin-left: 4%;
+    margin-right: 4%;
+}
+</style>

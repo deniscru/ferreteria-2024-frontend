@@ -8,6 +8,7 @@ const routes = [
     component: HomeView
   },
   {
+    // se anula: se lista todos los productos en lugar de listar por el "TIPO"
     path: '/prodLista/:id',
     name: 'prodLista',
     component: () => import('../views/producto/ViewProdList.vue'),
