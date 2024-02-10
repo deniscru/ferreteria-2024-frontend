@@ -2,13 +2,14 @@
     <div class="body-list-title margen">
         <div class="body-boton-agregar">
             <div class="boton-agregar">
-                <button class="waves-effect waves-light-green btn blue">Nuevo Producto</button>
+                <router-link :to="{ name: 'nuevoProducto' }" class=" waves-effect waves-light-green btn blue">Nuevo
+                    Producto</router-link>
             </div>
         </div>
         <div class="tabla">
             <table class="striped">
                 <thead>
-                    <tr>
+                    <tr class="blue">
                         <td>Nombre</td>
                         <td>Precio de Compra</td>
                         <td>Precio de Venta</td>

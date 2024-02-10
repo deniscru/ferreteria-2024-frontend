@@ -1,18 +1,15 @@
 <template>
   <div class="app">
     <ComponentFooter />
-    <ComponentList />
     <router-view />
   </div>
 </template>
 
 <script>
 import ComponentFooter from './components/ComponentFooter.vue';
-import ComponentList from './components/ComponentList.vue';
 export default {
   components: {
-    ComponentFooter,
-    ComponentList
+    ComponentFooter
   },
 
 }
