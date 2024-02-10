@@ -4,7 +4,7 @@
             <h1> Nuevo Producto</h1>
         </div>
         <ComponentForm />
-        <router-link :to="{ name: 'home' }" class="btn blue">Atras</router-link>
+        <router-link :to="{ name: 'home' }" class="btn blue margenes">Atras</router-link>
     </div>
 </template>
 
@@ -16,4 +16,9 @@ export default {
     name: "ViewProdForm"
 }
 </script>
-<style></style>
+<style>
+.margenes {
+    margin-bottom: 3%;
+    margin-top: 4%;
+}
+</style>

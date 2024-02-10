@@ -4,6 +4,11 @@
             <div class="boton-agregar">
                 <router-link :to="{ name: 'nuevoProducto' }" class=" waves-effect waves-light-green btn blue">Nuevo
                     Producto</router-link>
+                <!-- En este link redirige a una lista de producto para seleccionar e ingrementar un prorcentaje
+                Tambien va a tener un filtrado por tipo de producto-->
+                <router-link :to="{ name: 'nuevoProducto' }" class=" waves-effect waves-light-green btn blue">Incrementar
+                    precios</router-link>
+                <!-- falta un filtrado por tipo-->
             </div>
         </div>
         <div class="tabla">
@@ -39,12 +44,10 @@ export default {
     name: 'ComponentList',
     data() {
         return {
-            nombre: "",
             lista: [],
         };
     },
     mounted() {
-        this.nombre = this.$route.params.id;
         this.obtenerDatos();
     },
     methods: {
