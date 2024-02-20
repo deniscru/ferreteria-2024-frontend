@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <ComponentList></ComponentList>
+    <div class="body-list-boton">
+        <ComponentList />
     </div>
 </template>
 
@@ -8,20 +8,21 @@
 import ComponentList from '@/components/ComponentList.vue';
 
 export default {
-    
+
     name: 'ViewProdList',
-    components:{
+    components: {
         ComponentList
     },
-    mounted(){
+    mounted() {
+
     },
 
-    data(){
-        return{
+    data() {
+        return {
         };
     },
-    methods:{
-        
+    methods: {
+
     }
 
 }

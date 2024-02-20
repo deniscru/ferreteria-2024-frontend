@@ -22,7 +22,7 @@ const routes = [
   {
     path: '/editarProducto/:id',
     name: "editarProducto",
-    component: () => import('../views/producto/ViewProdForm.vue')
+    component: () => import('../views/producto/ProdFormEdit.vue')
   },
   {
     path: '/about',
