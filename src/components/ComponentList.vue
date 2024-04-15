@@ -1,28 +1,29 @@
 <template>
     <div class="body-list-title margen">
-        <div class="body-boton row">
+        <div class="row">
+            <form class="col s6">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <select name="select" class="selector">
+                            <option value="" disabled selected>Seleccionar</option>
+                            <option value="1">Electricidad</option>
+                            <option value="2">Plomeria</option>
+                            <option value="3">Ferreteria</option>
+                            <option value="4">Limpieza</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <button class="btn blue">filtrar</button>
+                    </div>
+                </div>
+            </form>
             <div class="body-boton-agregar"><router-link :to="{ name: 'nuevoProducto' }"
                     class=" waves-effect waves-light-green btn blue">Nuevo
                     Producto</router-link>
             </div>
             <!-- En este link redirige a una lista de producto para seleccionar e ingrementar un prorcentaje
                 Tambien va a tener un filtrado por tipo de producto-->
-            <div class="body-boton-precio"><router-link :to="{ name: 'nuevoProducto' }"
-                    class=" waves-effect waves-light-green btn blue margen_boton">Incrementar Precios</router-link>
-                <!-- falta un filtrado por tipo-->
-            </div>
-            <div class="body-filter">
-                <button class="btn blue">filtrar</button>
-            </div>
-            <div class="col s6 body-select">
-                <select name="select" class="selector">
-                    <option value=" " disabled selected>Seleccionar</option>
-                    <option value="1">Electricidad</option>
-                    <option value="2">Plomeria</option>
-                    <option value="3">Ferreteria</option>
-                    <option value="4">Limpieza</option>
-                </select>
-            </div>
+
         </div>
         <div class="tabla">
             <table class="striped">
@@ -90,31 +91,10 @@ export default {
 </script>
 
 <style>
-.body-boton {
-    text-align: right;
-    margin-top: 2%;
-}
-
 .button-anterior {
     margin-right: 1%;
 }
 
-.body-boton-agregar,
-.body-boton-precio {
-    float: right;
-}
-
-.body-filter {
-    float: left;
-}
-
-.body-boton-agregar {
-    margin-left: 1%;
-}
-
-.body-select {
-    height: 36px;
-}
 
 .cabecera-table td {
     text-align: center;

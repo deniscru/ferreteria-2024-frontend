@@ -4,9 +4,6 @@
             <h1> Nuevo Producto</h1>
         </div>
         <ComponentForm />
-        <div class="row body-button-atras">
-            <router-link :to="{ name: 'home' }" class="btn blue">Atras</router-link>
-        </div>
     </div>
 </template>
 

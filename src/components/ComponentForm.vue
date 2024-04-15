@@ -7,14 +7,8 @@
                     <label for="nombre_prod">Nombre</label>
                 </div>
                 <div class="input-field col s6">
-                    <input id="nom_alias_prod" type="text" class="validate" v-model="prod.nombre_alias" required>
-                    <label for="nom_alias_prod">Nombre alias</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <textarea id="descripcion" class="materialize-textarea" v-model="prod.descrip"></textarea>
-                    <label for="descripcion">Descripcion</label>
+                    <input id="cantidad" type="number" min="1" class="validate" required v-model="prod.cant">
+                    <label for="cantidad">Cantidad</label>
                 </div>
             </div>
             <div class="row">
@@ -30,15 +24,9 @@
             </div>
             <div class="row">
                 <div class="input-field col s6">
-                    <input id="medida" type="number" class="validate" required v-model="prod.medida">
-                    <label for="medida">Medida</label>
+                    <textarea id="descripcion" class="materialize-textarea" v-model="prod.descrip"></textarea>
+                    <label for="descripcion">Descripcion</label>
                 </div>
-                <div class="input-field col s6">
-                    <input id="cantidad" type="number" min="1" class="validate" required v-model="prod.cant">
-                    <label for="cantidad">Cantidad</label>
-                </div>
-            </div>
-            <div class="row">
                 <div class="input-field col s6">
                     <select name="select" v-model="prod.tipo" required>
                         <option value="" disabled selected>Seleccionar</option>
@@ -50,7 +38,11 @@
                     <label>Tipo</label>
                 </div>
             </div>
-            <div class="row"><button class="btn green" @click="guardar">Guardar</button></div>
+            <div class="row">
+                <div class="row botones"><button class="btn green" @click="guardar">Guardar</button>
+                    <router-link :to="{ name: 'home' }" class="btn blue atras">Atras</router-link>
+                </div>
+            </div>
         </form>
     </div>
 </template>
@@ -67,11 +59,9 @@ export default {
             lista: [],
             prod: {
                 nombre: "",
-                nombre_alias: "",
                 descrip: "",
                 precio_venta: "",
                 precio_compra: "",
-                medida: "",
                 cant: "",
                 tipo: "",
             },
@@ -94,9 +84,7 @@ export default {
                 "http://127.0.0.1:8000/producto/alta",
                 {
                     "nombre": this.prod.nombre,
-                    "nombre_alias": this.prod.nombre_alias,
                     "descripcion": this.prod.descrip,
-                    "medida": this.prod.medida,
                     "precio_de_compra": this.prod.precio_compra,
                     "precio_de_venta": this.prod.precio_venta,
                     "cant": this.prod.cant,
@@ -123,5 +111,9 @@ export default {
 
 .select {
     width: 100%;
+}
+
+.atras {
+    margin-left: 5px;
 }
 </style>
