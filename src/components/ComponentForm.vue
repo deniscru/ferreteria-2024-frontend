@@ -28,7 +28,7 @@
                     <label for="descripcion">Descripcion</label>
                 </div>
                 <div class="input-field col s6">
-                    <select name="select" v-model="prod.tipo" required>
+                    <select name="select" class="selector" v-model="prod.tipo" required>
                         <option value="" disabled selected>Seleccionar</option>
                         <option value="1">Electricidad</option>
                         <option value="2">Plomeria</option>
@@ -65,6 +65,8 @@ export default {
                 cant: "",
                 tipo: "",
             },
+            pr_2litros: "",
+            pr_5litros: "",
         }
     },
     mounted() {

@@ -25,6 +25,11 @@ const routes = [
     component: () => import('../views/producto/ProdFormEdit.vue')
   },
   {
+    path: '/incrementar',
+    name: "incrementar",
+    component: () => import('../views/producto/ViewProdListIncre.vue')
+  },
+  {
     path: '/about',
     name: 'about',
     // route level code-splitting
