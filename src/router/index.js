@@ -30,6 +30,16 @@ const routes = [
     component: () => import('../views/producto/ViewProdListIncre.vue')
   },
   {
+    path: '/factura',
+    name: "factura",
+    component: () => import('../views/producto/ViewProdListIncre.vue')
+  },
+  {
+    path: '/ventaHoy',
+    name: "ventaHoy",
+    component: () => import('../views/producto/ViewProdListIncre.vue')
+  },
+  {
     path: '/about',
     name: 'about',
     // route level code-splitting

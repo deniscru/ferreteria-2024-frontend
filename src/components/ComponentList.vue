@@ -1,5 +1,20 @@
 <template>
     <div class="body-list-title margen">
+        <div class="row body-boton">
+            <div class="body-boton-nuevo"><router-link :to="{ name: 'nuevoProducto' }"
+                    class=" waves-effect waves-light-green btn blue">Nuevo
+                    Producto</router-link>
+            </div>
+            <div class="body-boton-incre"><router-link :to="{ name: 'incrementar' }"
+                    class=" waves-effect waves-light-green btn blue">Incrementar</router-link>
+            </div>
+            <div class="body-boton-factura"><router-link :to="{ name: 'factura' }"
+                    class=" waves-effect waves-light-green btn blue">Cargar Factura</router-link>
+            </div>
+            <div class="body-boton-ventas"><router-link :to="{ name: 'ventaHoy' }"
+                    class=" waves-effect waves-light-green btn blue">Ventas de hoy</router-link>
+            </div>
+        </div>
         <div class="body-boton row">
             <div class="body-filter">
                 <button class="btn blue" @click="obtenerDatos(page, true)">filtrar</button>
@@ -22,15 +37,7 @@
                 <button class="btn blue" @click="obtenerDatos(1, false)" v-if="filtro">Limpiar</button>
             </div>
         </div>
-        <div class="row">
-            <div class="body-boton-agregar"><router-link :to="{ name: 'nuevoProducto' }"
-                    class=" waves-effect waves-light-green btn blue">Nuevo
-                    Producto</router-link>
-            </div>
-            <div class="body-boton-agregar"><router-link :to="{ name: 'incrementar' }"
-                    class=" waves-effect waves-light-green btn blue">Incrementar</router-link>
-            </div>
-        </div>
+
         <div class="tabla">
             <table class="striped">
                 <thead>
@@ -44,7 +51,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="item of this.lista" :key="item.index">
-                        <td class="centro"> {{ item.id }}</td>
+                        <td class="centro"> {{ parseInt(item.id) }}</td>
                         <td> {{ item.nombre }}</td>
                         <td> {{ item.precio_de_compra }}</td>
                         <td> {{ item.precio_de_venta }}</td>
@@ -159,6 +166,10 @@ tr td {
     margin-right: 1%;
 }
 
+.button-num {
+    background-color: aqua;
+}
+
 .centro {
     text-align: center;
 }
@@ -173,16 +184,19 @@ tr td {
     margin-right: 4%;
 }
 
-.body-boton-agregar,
-.body-boton-precio {
+.body-boton-incre,
+.body-boton-nuevo,
+.body-boton-ventas,
+.body-boton-factura {
     float: right;
+    margin: 0 0 0 8px;
 }
 
 .body-filter {
     float: left;
 }
 
-.body-boton-agregar {
+.body-boton {
     margin-left: 1%;
 }
 

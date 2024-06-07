@@ -82,19 +82,20 @@ export default {
 
         },
         guardar() {
+            var datos = {
+                "nombre": this.prod.nombre,
+                "descripcion": this.prod.descrip,
+                "precio_de_compra": this.prod.precio_compra,
+                "precio_de_venta": this.prod.precio_venta,
+                "cant": this.prod.cant,
+                "tipo_id": this.prod.tipo
+            }
             axios.post(
-                "http://127.0.0.1:8000/producto/alta",
-                {
-                    "nombre": this.prod.nombre,
-                    "descripcion": this.prod.descrip,
-                    "precio_de_compra": this.prod.precio_compra,
-                    "precio_de_venta": this.prod.precio_venta,
-                    "cant": this.prod.cant,
-                    "tipo_id": this.prod.tipo
-                }
+                "http://127.0.0.1:8000/producto/alta", datos
+
             ).then(() => {
                 window.alert("El Producto se cargo correctamente");
-                window.location.href = "/nuevoProducto";
+                location.reload();
             }).catch((error) => {
                 this.$swal('Falló el envío de solicitud', error.response.data.error, 'error');
             });

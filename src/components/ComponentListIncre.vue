@@ -14,7 +14,7 @@
                 </select>
             </div>
             <div class="input-field col s4">
-                <input id="porcentaje" type="number" min="1" class="validate" required v-model="cant">
+                <input id="porcentaje" type="number" min="1" max="100" class="validate" required v-model="cant">
                 <label for="porcentaje">Ingrese Porcentaje</label>
             </div>
             <div class="body-limpiar">
@@ -25,27 +25,37 @@
             <table class="striped">
                 <thead>
                     <tr class="blue cabecera-table">
-                        <td>Nombre</td>
+                        <td id="nombre">Nombre</td>
                         <td>Codigo</td>
+                        <td>Precio de Compra</td>
                         <td>Precio de Venta</td>
+                        <td>fecha actualizada</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item of this.lista" :key="item.index">
                         <td>
-                            <label>
-                                <input type="checkbox" id={{item.id}} />
-                                <span>{{ item.nombre }}</span>
+                            <label class="label-nombre">
+                                <input type="checkbox" v-bind:id="'input' + item.id" value="1" />
+                                <span class="nombre">
+                                    {{ item.nombre.toUpperCase() }}
+                                </span>
                             </label>
                         </td>
                         <td> {{ item.id }}</td>
                         <td> {{ item.precio_de_compra }}</td>
-
+                        <td> {{ item.precio_de_venta }}</td>
+                        <td>{{ item.date }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
+        <div class="row">
+            <div class="row body-bot-incre">
+                <button class="btn blue" @click="incrementar">Incrementar</button>
+                <router-link :to="{ name: 'home' }" class="btn blue atras">Atras</router-link>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -74,9 +84,9 @@ export default {
                 this.filtro = true;
             } else if (filtro && this.tipo == "") {
                 this.$swal('Advertencia', " Debe seleccionar un tipo", 'error');
-                direccion = "http://127.0.0.1:8000/producto/lista/precios";
+                direccion = "http://127.0.0.1:8000/producto/lista/precios/todos/increm";
             } else {
-                direccion = "http://127.0.0.1:8000/producto/lista/precios";
+                direccion = "http://127.0.0.1:8000/producto/lista/precios/todos/increm";
                 this.filtro = false;
                 this.tipo = "";
             }
@@ -89,11 +99,55 @@ export default {
         },
         incrementar() {
             //debo incrementar los productos seleccionados en la tabla con el valor ingresado
-
+            if (this.cant != "") {
+                var lis = this.obtenerProdSelec();
+                var dato = {
+                    "porcentaje": this.cant,
+                    "lista": lis,
+                }
+                axios.post("http://127.0.0.1:8000/producto/actualizar/data", dato).then((response) => {
+                    console.log(response);
+                    location.reload();
+                }).catch((error) => { this.$swal("Error", error.response.data.error, "error") })
+            } else {
+                window.alert("Debe ingresar el porcentaje");
+            }
+        },
+        obtenerProdSelec() {
+            var lis = [];
+            for (var prod of this.lista) {
+                if (document.getElementById("input" + prod.id).checked) {
+                    lis.push(prod.id);
+                }
+            }
+            return lis
         }
     }
 }
 
 
 </script>
-<style></style>
+<style>
+.body-bot-incre {
+    margin: 2% 0 0 0;
+}
+
+.atras {
+    margin: 0 0 0 2%;
+}
+
+.nombre {
+    font-style: italic;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: x-small;
+    color: black;
+}
+
+.label-nombre {
+    margin: 0 0 0 15px;
+}
+
+.cabecera-table td {
+    text-transform: uppercase;
+}
+</style>

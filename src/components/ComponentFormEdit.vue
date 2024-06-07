@@ -56,13 +56,12 @@ export default {
         return {
             lista: [],
             prod: {
-                id: "",
                 nombre: "",
                 descrip: "",
-                precio_venta: "",
-                precio_compra: "",
-                cant: "",
-                tipo_id: "",
+                precio_de_venta: null,
+                precio_de_compra: null,
+                cant: null,
+                tipo_id: null,
             },
             id: null,
         }
@@ -83,30 +82,23 @@ export default {
 
     },
     methods: {
-        obtenerDatos() {
-            //No se utiliza
-            axios.get("http://127.0.0.1:8000/tipo/lista").then((response) => {
-                this.lista = response.data.items;
-            }).catch((error) => {
-                this.$swal('Error', error.response.data.error, 'error');
-            });
-
-        },
         editar() {
             //Error 422
+            var datos = {
+                "nombre": this.prod.nombre,
+                "descripcion": this.prod.descripcion,
+                "precio_de_compra": this.prod.precio_de_compra,
+                "precio_de_venta": this.prod.precio_de_venta,
+                "cant": this.prod.cant,
+                "tipo_id": this.prod.tipo_id,
+            };
+            console.log(datos);
             if (window.confirm("seguro que desea editar?")) {
-                axios.post("http://127.0.0.1:8000/producto/actualizar/data/campos",
-                    {
-                        "id": this.prod.id,
-                        "nombre": this.prod.nombre,
-                        "descripcion": this.prod.descrip,
-                        "precio_de_compra": this.prod.precio_compra,
-                        "precio_de_venta": this.prod.precio_venta,
-                        "cant": this.prod.cant,
-                        "tipo_id": this.prod.tipo_id
-                    }).then(() => {
+
+                axios.post("http://127.0.0.1:8000/producto/actualizar/data/campos/" + this.id,
+                    datos).then(() => {
                         window.alert("El Producto se Edito correctamente");
-                        window.location.href = "/editarProducto/" + this.id;
+                        location.reload();
                     }).catch((error) => {
                         this.$swal('Falló el envío de solicitud', error.response.data.error, 'error');
                     })
