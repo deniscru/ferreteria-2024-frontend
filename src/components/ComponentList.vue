@@ -1,17 +1,17 @@
 <template>
     <div class="body-list-title margen">
         <div class="row body-boton">
-            <div class="body-boton-nuevo"><router-link :to="{ name: 'nuevoProducto' }"
+            <div class="botones"><router-link :to="{ name: 'nuevoProducto' }"
                     class=" waves-effect waves-light-green btn blue">Nuevo
                     Producto</router-link>
             </div>
-            <div class="body-boton-incre"><router-link :to="{ name: 'incrementar' }"
+            <div class="botones"><router-link :to="{ name: 'incrementar' }"
                     class=" waves-effect waves-light-green btn blue">Incrementar</router-link>
             </div>
-            <div class="body-boton-factura"><router-link :to="{ name: 'factura' }"
-                    class=" waves-effect waves-light-green btn blue">Cargar Factura</router-link>
+            <div class="botones"><router-link :to="{ name: 'facturas' }"
+                    class=" waves-effect waves-light-green btn blue">Facturas</router-link>
             </div>
-            <div class="body-boton-ventas"><router-link :to="{ name: 'ventaHoy' }"
+            <div class="botones"><router-link :to="{ name: 'ventaHoy' }"
                     class=" waves-effect waves-light-green btn blue">Ventas de hoy</router-link>
             </div>
         </div>
@@ -184,20 +184,13 @@ tr td {
     margin-right: 4%;
 }
 
-.body-boton-incre,
-.body-boton-nuevo,
-.body-boton-ventas,
-.body-boton-factura {
+.botones {
     float: right;
     margin: 0 0 0 8px;
 }
 
 .body-filter {
     float: left;
-}
-
-.body-boton {
-    margin-left: 1%;
 }
 
 .body-select {
@@ -211,5 +204,6 @@ tr td {
 .body-boton {
     text-align: right;
     margin-top: 2%;
+    margin-left: 1%;
 }
 </style>

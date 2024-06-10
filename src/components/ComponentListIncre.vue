@@ -1,21 +1,21 @@
 <template>
     <div class="body-list-title margen">
         <div class="body-boton row">
-            <div class="body-filter">
+            <div class="body-filter row">
                 <button class="btn blue" @click="obtenerDatos(true)">filtrar</button>
             </div>
-            <div class="col s6 body-select">
+            <div class=" input-field col s3 body-select">
                 <select name="select" v-model="tipo">
-                    <option value=" " disabled selected>Seleccionar</option>
+                    <option value="" disabled selected>Seleccionar</option>
                     <option value="1">Electricidad</option>
                     <option value="2">Plomeria</option>
                     <option value="3">Ferreteria</option>
                     <option value="4">Limpieza</option>
                 </select>
             </div>
-            <div class="input-field col s4">
+            <div class="input-field col s6">
                 <input id="porcentaje" type="number" min="1" max="100" class="validate" required v-model="cant">
-                <label for="porcentaje">Ingrese Porcentaje</label>
+                <label for="porcentaje" translate="no">Ingresar el porcentaje</label>
             </div>
             <div class="body-limpiar">
                 <button class="btn blue" @click="obtenerDatos(false)" v-if="filtro">Limpiar</button>
@@ -42,7 +42,7 @@
                                 </span>
                             </label>
                         </td>
-                        <td> {{ item.id }}</td>
+                        <td translate="no"> {{ item.id }}</td>
                         <td> {{ item.precio_de_compra }}</td>
                         <td> {{ item.precio_de_venta }}</td>
                         <td>{{ item.date }}</td>
@@ -149,5 +149,10 @@ export default {
 
 .cabecera-table td {
     text-transform: uppercase;
+}
+
+.body-boton {
+    text-align: right;
+    margin-top: 2%;
 }
 </style>
