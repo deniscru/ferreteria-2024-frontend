@@ -42,7 +42,7 @@
     </div>
 </template>
 <script>
-//import axios from "axios";
+import axios from "axios";
 import M from "materialize-css";
 export default {
     name: "ComponentListFactura",
@@ -50,6 +50,7 @@ export default {
         return {
             lista: [],
             cantFacturas: 0,
+            page: 1,
         }
     },
     mounted() {
@@ -58,7 +59,12 @@ export default {
     },
     methods: {
         obtenerDatos() {
-
+            axios.get("http://127.0.0.1:8000/factura/lista/" + this.page).then(res => this.lista = res.data).catch((error) => {
+                this.$swal('Error', error.response.data.error, 'error')
+                    .then(() => {
+                        window.location.href = "/"
+                    })
+            })
         }
     }
 

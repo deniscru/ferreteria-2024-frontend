@@ -36,17 +36,20 @@
                     <label for="cantidad" translate="no">Ingresar la cantidad comprada</label>
                 </div>
                 <div class="row boton-agregar">
-                    <button class="btn blue" @click="agregarProdCarrito()">Agregar</button>
+                    <button class="btn blue" @click="addProducto">Agregar</button>
                 </div>
             </div>
         </div>
         <div class="body-resultados" v-else-if="this.filtrar">
             <h4>No se encontraron resultados con el codigo: {{ this.codigo }}</h4>
         </div>
-        <div class="body-list-prod" v-if="this.productos != null">
+        <div class="body-list-prod" v-if="this.productos.length != 0">
             <div class="body-productos-carrito">
                 <table class="striped">
                     <thead>
+                        <tr class="blue cabecera-table">
+                            <td colspan="7"> Lista de Productos</td>
+                        </tr>
                         <tr class="blue cabecera-table">
                             <td>Codigo</td>
                             <td>Nombre</td>
@@ -54,6 +57,7 @@
                             <td>Precio de Venta</td>
                             <td>Cantidad</td>
                             <td>Total</td>
+                            <td>Boton</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,14 +66,19 @@
                             <td> {{ item.nombre }}</td>
                             <td> {{ item.precio_de_compra }}</td>
                             <td> {{ item.precio_de_venta }}</td>
-                            <td> Cantidad</td> <!--agregar este dato a la lista-->
-                            <td> Total</td> <!--agregar este dato a la lista-->
+                            <td> {{ item.cantProducto }}</td> <!--agregar este dato a la lista-->
+                            <td> {{ item.precio_de_venta * item.cantProducto }}</td> <!--agregar este dato a la lista-->
+                            <td> <button class="btn red" @click="removeProducto(item.index)">Quitar</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="body-list-prod" v-else>No se agrego ningun producto</div>
+        <div class="body-list-prod" v-else>
+            <hr>
+            <h4>No se agrego ningun producto</h4>
+            <hr>
+        </div>
         <div class="row body-cargar-atras">
             <button class="btn blue">Cargar Factura</button>
             <router-link :to="{ name: 'facturas' }" class="btn blue atras">Cancelar</router-link>
@@ -86,17 +95,26 @@ export default {
     data() {
         return {
             resultado: null,
-            productos: null,
+            productos: [],
+            datos: null,
             filtrar: false,
             codigo: null,
-            cantProducto: null
+            cantProducto: null,
         }
     },
     mounted() {
         M.AutoInit();
+        if (localStorage.getItem('productos')) {
+            try {
+                this.productos = JSON.parse(localStorage.getItem('productos'));
+            } catch (e) {
+                localStorage.removeItem('productos');
+            }
+        }
     },
     methods: {
         buscarProducto(filtro) {
+            // obtenemos el producto que queremos agregar a la factura
             this.filtro = filtro;
             axios.get("http://127.0.0.1:8000/producto/" + this.codigo).then((response) => {
                 this.resultado = response.data;
@@ -104,7 +122,45 @@ export default {
                 this.$swal('Error', error.response.data.error, 'error').response
             });
         },
-        agregarProdCarrito() {
+        addProducto() {
+            // asegurarse que el usuario efectivamente ha escrito algo
+            if (this.resultado == null) {
+                return;
+            }
+            if (this.cantProducto == null) {
+                window.alert("Debe ingresar una cantidad");
+                return;
+            }
+            var encontro = false;
+            for (var prod of this.productos) {
+                if (prod.id == this.resultado.id) {
+                    prod.cantProducto = prod.cantProducto + this.cantProducto;
+                    encontro = true;
+                }
+            }
+            if (!encontro) {
+                this.resultado["cantProducto"] = this.cantProducto;
+                this.productos.push(this.resultado);
+            }
+            this.resultado = null;
+            this.cantProducto = null;
+            this.filtrar = false;
+            this.saveProducto();
+        },
+        removeProducto(x) {
+            this.productos.splice(x, 1);
+            this.saveProducto();
+        },
+        saveProducto() {
+            const parsed = JSON.stringify(this.productos);
+            localStorage.setItem('productos', parsed);
+        },
+        addFactura() {
+            //Controlar la escructura de datos al enviarlo por la api
+            // cantProductos se debe pasar de una manera diferente
+            axios.post("http://127.0.0.1:8000/factura/altaFactura", this.productos).then(() => { window.alert("La factura se cargo correctamente!"); }).catch((error) => {
+                this.$swal('Falló el envío de solicitud', error.response.data.error, 'error');
+            })
 
         }
     }
@@ -116,7 +172,7 @@ export default {
 }
 
 .body-cargar-atras {
-    margin: 10px 0 0 0;
+    margin: 10px 0 15px 0;
 }
 
 .body-buscar {
