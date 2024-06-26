@@ -18,6 +18,7 @@
                             <td>Nombre</td>
                             <td>Precio de Compra</td>
                             <td>Precio de Venta</td>
+                            <td>Cantidad</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,6 +27,7 @@
                             <td> {{ resultado.nombre }}</td>
                             <td> {{ resultado.precio_de_compra }}</td>
                             <td> {{ resultado.precio_de_venta }}</td>
+                            <td> {{ resultado.cant }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -68,7 +70,8 @@
                             <td> {{ item.precio_de_venta }}</td>
                             <td> {{ item.cantProducto }}</td> <!--agregar este dato a la lista-->
                             <td> {{ item.precio_de_venta * item.cantProducto }}</td> <!--agregar este dato a la lista-->
-                            <td> <button class="btn red" @click="removeProducto(item.index)">Quitar</button></td>
+                            <td> <button class="btn red" @click="removeProdCompleto(item.id)">Quitar</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -80,8 +83,8 @@
             <hr>
         </div>
         <div class="row body-cargar-atras">
-            <button class="btn blue">Cargar Factura</button>
-            <router-link :to="{ name: 'facturas' }" class="btn blue atras">Cancelar</router-link>
+            <button @click="addFactura" class="btn blue">Cargar Factura</button>
+            <button @click="limpiarVar()" class="btn blue atras">Cancelar</button>
         </div>
 
     </div>
@@ -104,20 +107,22 @@ export default {
     },
     mounted() {
         M.AutoInit();
-        if (localStorage.getItem('productos')) {
-            try {
-                this.productos = JSON.parse(localStorage.getItem('productos'));
-            } catch (e) {
-                localStorage.removeItem('productos');
-            }
-        }
+        this.obtenerVarLocalStore();
     },
     methods: {
         buscarProducto(filtro) {
             // obtenemos el producto que queremos agregar a la factura
+            if (this.codigo == null) {
+                this.$swal.fire({
+                    icon: "error",
+                    title: "Debe ingresar el codigo del producto!",
+                });
+                return;
+            }
             this.filtro = filtro;
             axios.get("http://127.0.0.1:8000/producto/" + this.codigo).then((response) => {
                 this.resultado = response.data;
+                this.codigo = null;
             }).catch((error) => {
                 this.$swal('Error', error.response.data.error, 'error').response
             });
@@ -128,17 +133,31 @@ export default {
                 return;
             }
             if (this.cantProducto == null) {
-                window.alert("Debe ingresar una cantidad");
+                this.$swal.fire({
+                    title: "Debe ingresar una cantidad!",
+                });
                 return;
             }
+
+            // incremento la cantidad de producto si vuelve a agregar uno igual
             var encontro = false;
             for (var prod of this.productos) {
                 if (prod.id == this.resultado.id) {
-                    prod.cantProducto = prod.cantProducto + this.cantProducto;
+                    var total = prod.cantProducto + this.cantProducto;
+                    if (total > this.resultado.cant) {
+                        this.$swal.fire({ title: "Excedes la cantidad disponible: " + (this.resultado.cant) });
+                        return;
+                    }
+                    prod.cantProducto = total;
                     encontro = true;
                 }
             }
+            // agrego a la lista de productos que se muestra en la factura que se esta generando
             if (!encontro) {
+                if (parseInt(this.resultado.cant) < parseInt(this.cantProducto)) {
+                    this.$swal.fire({ title: "Excedes la cantidad disponible: " + this.resultado.cant });
+                    return;
+                }
                 this.resultado["cantProducto"] = this.cantProducto;
                 this.productos.push(this.resultado);
             }
@@ -147,21 +166,79 @@ export default {
             this.filtrar = false;
             this.saveProducto();
         },
-        removeProducto(x) {
-            this.productos.splice(x, 1);
-            this.saveProducto();
+        removeProdCompleto(id) {
+            //elimino el producto de la lista de la factura
+            this.$swal.fire({
+                title: 'Seguro que desea quitar?',
+                showDenyButton: true,
+                confirmButtonText: 'Aceptar',
+                denyButtonText: `Cancelar`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let listaNueva = [];
+                    for (let valor of this.productos) {
+                        if (valor.id != id) {
+                            listaNueva.push(valor);
+                        }
+                    }
+                    this.productos = listaNueva;
+                    this.saveProducto();
+                }
+            })
+
         },
         saveProducto() {
+            //guarlo las variables al almacenamiento del cliente
             const parsed = JSON.stringify(this.productos);
             localStorage.setItem('productos', parsed);
         },
         addFactura() {
-            //Controlar la escructura de datos al enviarlo por la api
-            // cantProductos se debe pasar de una manera diferente
-            axios.post("http://127.0.0.1:8000/factura/altaFactura", this.productos).then(() => { window.alert("La factura se cargo correctamente!"); }).catch((error) => {
-                this.$swal('Falló el envío de solicitud', error.response.data.error, 'error');
+            //agrego la factura nueva
+            if (this.productos.length == 0) {
+                this.$swal.fire({
+                    title: "No posee productos!"
+                });
+                return;
+            }
+            this.$swal.fire({
+                title: 'Seguro que desea cargar la factura?',
+                showDenyButton: true,
+                confirmButtonText: 'Aceptar',
+                denyButtonText: `Cancelar`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const struc = [];
+                    for (let prod of this.productos) {
+                        struc.push({
+                            "id": prod.id, "cant": prod.cantProducto
+                        });
+                    }
+                    axios.post("http://127.0.0.1:8000/factura/altaFactura", {
+                        "productos": struc,
+                    }).then(() => {
+                        window.alert("La factura se cargo correctamente!");
+                        this.limpiarVar();
+                    }).catch((error) => {
+                        this.$swal('Falló el envío de solicitud', error.response.data.error, 'error');
+                    })
+                }
             })
 
+        },
+        obtenerVarLocalStore() {
+            //obtengo los valores de del local store
+            if (localStorage.getItem('productos')) {
+                try {
+                    this.productos = JSON.parse(localStorage.getItem('productos'));
+                } catch (e) {
+                    localStorage.removeItem('productos');
+                }
+            }
+        },
+        limpiarVar() {
+            //elimino los datos del local store
+            localStorage.removeItem("productos");
+            this.$router.push({ name: 'facturas' });
         }
     }
 }

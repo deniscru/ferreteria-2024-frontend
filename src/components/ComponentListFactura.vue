@@ -7,7 +7,7 @@
             <div class="botones"><button class="btn blue ganacias">Ganancias de hoy</button>
             </div>
         </div>
-        <div class="row body-lista" v-if="this.cantFacturas != 0">
+        <div class="row body-lista" v-if="this.listFacturas">
             <table class="striped">
                 <thead>
                     <tr class="blue">
@@ -26,8 +26,8 @@
                         <td> {{ item.id }}</td>
                         <td>{{ item.total }}</td>
                         <td>0</td>
-                        <td>{{ item.fecha }}</td>
-                        <td><button class="">ver productos</button></td>
+                        <td>{{ item.fecha_y_hora }}</td>
+                        <td><button class="btn blue">ver productos</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -49,7 +49,7 @@ export default {
     data() {
         return {
             lista: [],
-            cantFacturas: 0,
+            listFacturas: false,
             page: 1,
         }
     },
@@ -59,7 +59,10 @@ export default {
     },
     methods: {
         obtenerDatos() {
-            axios.get("http://127.0.0.1:8000/factura/lista/" + this.page).then(res => this.lista = res.data).catch((error) => {
+            axios.get("http://127.0.0.1:8000/factura/lista/" + this.page).then((response) => {
+                this.lista = response.data.items;
+                this.listFacturas = true;
+            }).catch((error) => {
                 this.$swal('Error', error.response.data.error, 'error')
                     .then(() => {
                         window.location.href = "/"
