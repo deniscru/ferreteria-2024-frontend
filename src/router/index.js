@@ -40,6 +40,11 @@ const routes = [
     component: () => import('../views/facturas/ViewFacturaForm.vue')
   },
   {
+    path: "/facturaProductos",
+    name: "facturaProductos",
+    component: () => import('../views/facturas/ViewFacturaListProd.vue')
+  },
+  {
     path: '/ventaHoy',
     name: "ventaHoy",
     component: () => import('../views/producto/ViewProdListIncre.vue')

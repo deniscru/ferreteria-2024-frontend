@@ -1,33 +1,31 @@
 <template>
     <div class="row body-facturas">
         <div class="row body-botones">
-            <div class="botones"><router-link :to="{ name: 'cargarFactura' }" class="btn blue nueva">Nueva
+            <div class="row botones"><router-link :to="{ name: 'cargarFactura' }" class="btn blue nueva">Nueva
                     Factura</router-link>
-            </div>
-            <div class="botones"><button class="btn blue ganacias">Ganancias de hoy</button>
             </div>
         </div>
         <div class="row body-lista" v-if="this.listFacturas">
             <table class="striped">
                 <thead>
-                    <tr class="blue">
-                        <td colspan="5">Lista de Facturas</td>
+                    <tr class="blue cabecera">
+                        <td colspan="5">LISTA DE FACTURAS</td>
                     </tr>
-                    <tr class="blue">
-                        <td>Codigo</td>
-                        <td>Total</td>
-                        <td>Cant. Productos</td>
-                        <td>Fecha</td>
-                        <td>Botones</td>
+                    <tr class="blue cabecera">
+                        <td>CODIGO</td>
+                        <td>TOTAL</td>
+                        <td>FECHA</td>
+                        <td colspan="2">BOTONES</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item of this.lista" :key="item.index">
-                        <td> {{ item.id }}</td>
+                        <td class="centro"> {{ item.id }}</td>
                         <td>{{ item.total }}</td>
-                        <td>0</td>
                         <td>{{ item.fecha_y_hora }}</td>
-                        <td><button class="btn blue">ver productos</button></td>
+                        <td class="centro"><button class="btn blue" @click="productosFactura(item.id)">ver
+                                productos</button></td>
+                        <td class="centro"><button class="btn red" @click="eliminar(item.id)">Eliminar</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -61,13 +59,44 @@ export default {
         obtenerDatos() {
             axios.get("http://127.0.0.1:8000/factura/lista/" + this.page).then((response) => {
                 this.lista = response.data.items;
-                this.listFacturas = true;
+                if (this.lista.length > 0) {
+                    this.listFacturas = true;
+                } else {
+                    this.listFacturas = false;
+                }
             }).catch((error) => {
                 this.$swal('Error', error.response.data.error, 'error')
                     .then(() => {
                         window.location.href = "/"
                     })
             })
+
+        },
+        eliminar(id) {
+            this.$swal.fire({
+                title: "¿Seguro que desea eliminar?",
+                showDenyButton: true,
+                confirmButtonText: "Aceptar",
+                denyButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post(
+                        "http://127.0.0.1:8000/factura/eliminar/" + id
+                    ).then((response) => {
+                        this.$swal({
+                            title: response.data.mensaje,
+                            icon: "success",
+                        });
+                        this.obtenerDatos();
+                    }).catch((error) => {
+                        this.$swal('Error', error.response.data.error, 'error')
+                    })
+                }
+            })
+        },
+        productosFactura(idF) {
+            localStorage.setItem("idFactura", idF);
+            this.$router.push({ name: 'facturaProductos' });
         }
     }
 
@@ -76,7 +105,7 @@ export default {
 <style>
 .body-botones {
     text-align: right;
-    margin: 15px 0 0 0;
+    margin: 15px 0 15px 0;
 }
 
 .body-facturas {
@@ -86,5 +115,14 @@ export default {
 .botones {
     float: right;
     margin: 0 0 0 8px;
+}
+
+.centro {
+    text-align: center;
+}
+
+.cabecera td {
+    text-align: center;
+    color: black
 }
 </style>
