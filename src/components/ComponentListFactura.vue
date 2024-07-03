@@ -1,7 +1,11 @@
 <template>
     <div class="row body-facturas">
         <div class="row body-botones">
-            <div class="row botones"><router-link :to="{ name: 'cargarFactura' }" class="btn blue nueva">Nueva
+            <div class="row botones">
+                <button class="btn blue" @click="ventasHoy">Ventas de Hoy</button>
+            </div>
+            <div class="row botones">
+                <router-link :to="{ name: 'cargarFactura' }" class="btn blue nueva">Nueva
                     Factura</router-link>
             </div>
         </div>
@@ -31,7 +35,7 @@
             </table>
         </div>
         <div class="row mensajeVacio" v-else>
-            <h1>No hay Facturas realizadas</h1>
+            <h1>{{ this.mensaje }}</h1>
         </div>
         <div class="body-atras">
             <div class="botones"><router-link :to="{ name: 'home' }" class="btn blue atras"> Atras</router-link>
@@ -49,16 +53,19 @@ export default {
             lista: [],
             listFacturas: false,
             page: 1,
+            mensaje: "No hay Facturas realizadas",
         }
     },
     mounted() {
         M.AutoInit();
         this.obtenerDatos();
+
     },
     methods: {
         obtenerDatos() {
             axios.get("http://127.0.0.1:8000/factura/lista/" + this.page).then((response) => {
                 this.lista = response.data.items;
+                console.log(this.lista)
                 if (this.lista.length > 0) {
                     this.listFacturas = true;
                 } else {
@@ -97,6 +104,22 @@ export default {
         productosFactura(idF) {
             localStorage.setItem("idFactura", idF);
             this.$router.push({ name: 'facturaProductos' });
+        },
+        ventasHoy() {
+            axios.get("http://127.0.0.1:8000/factura/lista/venta/hoy").then((response) => {
+                this.lista = response.data.items;
+                if (this.lista.length > 0) {
+                    this.listFacturas = true;
+                } else {
+                    this.mensaje = "No hay facturas realizadas del dia de hoy!"
+                    this.listFacturas = false;
+                }
+            }).catch((error) => {
+                this.$swal('Error', error.response.data.error, 'error')
+                    .then(() => {
+                        window.location.href = "/"
+                    })
+            })
         }
     }
 

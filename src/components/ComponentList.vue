@@ -11,9 +11,6 @@
             <div class="botones"><router-link :to="{ name: 'facturas' }"
                     class=" waves-effect waves-light-green btn blue">Facturas</router-link>
             </div>
-            <div class="botones"><router-link :to="{ name: 'ventaHoy' }"
-                    class=" waves-effect waves-light-green btn blue">Ventas de hoy</router-link>
-            </div>
         </div>
         <div class="body-boton row">
             <div class="body-filter">
