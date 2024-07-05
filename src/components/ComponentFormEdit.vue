@@ -69,7 +69,7 @@ export default {
     mounted() {
         M.AutoInit();
         if (this.$route.params.id != undefined)
-            // carga editar
+            // carga editar, detalles en las casillas de datos
             this.id = this.$route.params.id;
         axios.get("http://127.0.0.1:8000/producto/" + this.$route.params.id)
             .then(res => this.prod = res.data)

@@ -16,7 +16,7 @@
                     <tr v-for="item of this.productos" :key="item.index">
                         <td>{{ item.id }}</td>
                         <td>{{ item.nombre }}</td>
-                        <td>{{ this.list_cant[item.id] }}</td>
+                        <td>{{ item.cant }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -37,7 +37,6 @@ export default {
         return {
             idFactura: null,
             productos: null,
-            list_cant: null,
         }
     },
     mounted() {
@@ -51,7 +50,6 @@ export default {
                 "http://127.0.0.1:8000/factura/lista/productos/" + this.idFactura
             ).then((response) => {
                 this.productos = response.data.lista;
-                this.list_cant = response.data.lista_cant;
             }).catch((error) => {
                 this.$swal('Error', error.response.data.error, 'error')
             })
