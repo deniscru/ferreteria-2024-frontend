@@ -8,6 +8,31 @@ const routes = [
     component: HomeView
   },
   {
+    path: "/lista/:tipo",
+    name: 'lista',
+    component: () => import('../views/producto/ViewProdList.vue'),
+  },
+  {
+    path: "/lista1/:tipo",
+    name: 'lista1',
+    component: () => import('../views/producto/ViewProdListF.vue'),
+  },
+  {
+    path: "/lista2/:tipo",
+    name: 'lista2',
+    component: () => import('../views/producto/ViewProdListP.vue'),
+  },
+  {
+    path: "/lista3/:tipo",
+    name: 'lista3',
+    component: () => import('../views/producto/ViewProdListE.vue'),
+  },
+  {
+    path: "/lista4/:tipo",
+    name: 'lista4',
+    component: () => import('../views/producto/ViewProdListL.vue'),
+  },
+  {
     // se anula: se lista todos los productos en lugar de listar por el "TIPO"
     path: '/prodLista/:id',
     name: 'prodLista',

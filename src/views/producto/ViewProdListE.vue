@@ -9,7 +9,7 @@ import ListComponent from '@/components/ListComponent.vue';
 
 export default {
 
-    name: 'ViewProdList',
+    name: 'ViewProdListE',
     components: {
         ListComponent
     }
