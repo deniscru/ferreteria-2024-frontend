@@ -1,5 +1,18 @@
 <template>
-    <div class="body-list-title margen">
+    <div class=" margen">
+        <div class="body-boton row">
+            <div class="body-filter">
+                <button class="btn blue" @click="filtrar(1, true)">Buscar</button>
+            </div>
+            <div class="input-field col s6">
+                <input id="nombre_prod" type="text" v-model="dato">
+                <label for="nombre_prod">Ingresar el Nombre o Codigo</label>
+            </div>
+            <div class="body-limpiar">
+                <!-- se debe acomodar correctamente el boton cuando aparece-->
+                <button class="btn blue" @click="filtrar(1, false)" v-if="filtro">Limpiar</button>
+            </div>
+        </div>
         <div class="tabla">
             <table class="striped">
                 <thead>
@@ -49,25 +62,54 @@ export default {
             anterior: "",
             page: 1,
             filtro: false,
-            nombre: ""
+            dato: "",
         };
     },
     mounted() {
         M.AutoInit();
-
-        this.obtenerDatos(this.page, false);
+        this.tipo = this.$route.params.tipo;
+        this.obtenerDatos(this.page);
     },
     methods: {
         obtenerDatos(page) {
-            this.tipo = this.$route.params.tipo;
-            console.log(this.tipo);
             var direccion = "";
             if (this.tipo != "0") {
                 direccion = "http://127.0.0.1:8000/producto/lista/Tipo/" + page + "/" + this.tipo;
             } else {
                 direccion = "http://127.0.0.1:8000/producto/lista/" + page;
-                this.filtro = false;
             }
+            this.realizarPedido(direccion);
+        },
+        filtrar(page, filtro) {
+            let direccion;
+            if (this.dato == "") {
+                this.$swal('Advertencia', " Debe ingresar un valor", 'error');
+                return null;
+            }
+            if (filtro) {
+                this.filtro = true;
+                console.log(Number.isInteger(this.dato));
+                if (parseInt(this.dato) > 0) {
+                    /* Falta implementar la url en el backend*/
+                    console.log("falta implementar la API");
+                    direccion = "http://127.0.0.1:8000/producto/lista/" + page;
+                } else if (this.tipo == "0" && !parseInt(this.dato)) {
+                    /* filtrado de todos y por un nombre */
+                    direccion = "http://127.0.0.1:8000/producto/lista/Nombre/" + page + "/" + this.dato;
+                } else if (Number.parseInt(this.dato) < 0) {
+                    /* tirar un mensaje que el valor ingresado no es valido */
+                    console.log("dato ingresado no es valido");
+                    direccion = "http://127.0.0.1:8000/producto/lista/" + page;
+                } else {
+                    direccion = "http://127.0.0.1:8000/producto/lista/TipoYNombre/" + page + "/" + this.tipo + "/" + this.dato;
+                }
+            } else {
+                direccion = "http://127.0.0.1:8000/producto/lista/Tipo/" + page + "/" + this.tipo;
+            }
+            console.log(direccion);
+            this.realizarPedido(direccion);
+        },
+        realizarPedido(direccion) {
             axios.get(direccion).then((response) => {
                 this.lista = response.data.items;
                 this.siguiente = response.data.siguiente;
@@ -101,5 +143,21 @@ export default {
 <style>
 .margen {
     margin: 0 40px 0 40px;
+}
+
+.body-boton {
+    text-align: right;
+}
+
+.body-filter {
+    float: left;
+    margin: 20px 0 0 0;
+}
+
+.body-limpiar {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
 }
 </style>

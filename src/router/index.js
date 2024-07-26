@@ -5,6 +5,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
+    redirect: '/lista/0',
     component: HomeView
   },
   {
