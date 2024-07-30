@@ -40,7 +40,6 @@
             </div>
             <div class="row">
                 <div class="row botones"><button class="btn green" @click="guardar">Guardar</button>
-                    <router-link :to="{ name: 'home' }" class="btn blue atras">Atras</router-link>
                 </div>
             </div>
         </form>

@@ -3,12 +3,6 @@
         <nav class="nav-extended blue">
             <div class="nav-wrapper">
                 <a href="#" class="brand-logo">Logo</a>
-                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-                <ul id="nav-mobile" class="right hide-on-med-and-down margen-der">
-                    <li><a href="">Facturas</a></li>
-                    <li><a href="">Incrementar</a></li>
-                    <li><a href="">Nuevo Producto</a></li>
-                </ul>
             </div>
             <div class="nav-content">
                 <ul class="tabs tabs-transparent margen-izq">
@@ -32,14 +26,14 @@
                         <router-link :class="[{ 'active': this.currentRouteName() === '/lista4/4' }]"
                             :to="{ name: 'lista4', params: { tipo: '4' } }">Limpieza</router-link>
                     </li>
+                    <li class="tab"><router-link :class="[{ 'active': this.currentRouteName() === '/nuevoProducto' }]"
+                            :to="{ name: 'nuevoProducto' }">Nuevo
+                            Producto</router-link></li>
+                    <li class="tab"><router-link :class="[{ 'active': this.currentRouteName() === '/facturas' }]"
+                            :to="{ name: 'facturas' }">Facturas</router-link></li>
                 </ul>
             </div>
         </nav>
-        <ul class="sidenav blue" id="mobile-demo">
-            <li><a href="">Facturas</a></li>
-            <li><a href="">Incrementar</a></li>
-            <li><a href="">Nuevo Producto</a></li>
-        </ul>
     </div>
 </template>
 

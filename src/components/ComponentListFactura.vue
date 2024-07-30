@@ -37,10 +37,6 @@
         <div class="row mensajeVacio" v-else>
             <h1>{{ this.mensaje }}</h1>
         </div>
-        <div class="body-atras">
-            <div class="botones"><router-link :to="{ name: 'home' }" class="btn blue atras"> Atras</router-link>
-            </div>
-        </div>
     </div>
 </template>
 <script>

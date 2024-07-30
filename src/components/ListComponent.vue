@@ -2,7 +2,7 @@
     <div class=" margen">
         <div class="body-boton row">
             <div class="body-filter">
-                <button class="btn blue" @click="filtrar(1, true)">Buscar</button>
+                <button class="btn blue" @click="filtrar(1, true, true)">Buscar</button>
             </div>
             <div class="input-field col s6">
                 <input id="nombre_prod" type="text" v-model="dato">
@@ -10,10 +10,20 @@
             </div>
             <div class="body-limpiar">
                 <!-- se debe acomodar correctamente el boton cuando aparece-->
-                <button class="btn blue" @click="filtrar(1, false)" v-if="filtro">Limpiar</button>
+                <button class="btn blue" @click="filtrar(1, false, false)" v-if="filtro">Limpiar</button>
+            </div>
+            <div class="body-limpiar">
+                <!-- se debe acomodar correctamente el boton cuando aparece-->
+                <button class="btn blue" @click="activarIncrementar(true)" v-if="!this.activado">Activar
+                    Incrementacion</button>
+                <button class="btn blue" @click="activarIncrementar(false)" v-if="this.activado">Desactivar</button>
+            </div>
+            <div class="body-limpiar">
+                <!-- se debe acomodar correctamente el boton cuando aparece-->
+                <button class="btn blue" @click="incrementar()" v-if="this.activado">Incrementar</button>
             </div>
         </div>
-        <div class="tabla">
+        <div class="tabla" v-if="this.listP">
             <table class="striped">
                 <thead>
                     <tr class="blue cabecera-table">
@@ -27,7 +37,13 @@
                 <tbody>
                     <tr v-for="item of this.lista" :key="item.index">
                         <td class="centro"> {{ parseInt(item.id) }}</td>
-                        <td> {{ item.nombre.toUpperCase() }}</td>
+                        <td v-if="activado"> <label class="label-nombre">
+                                <input type="checkbox" v-bind:id="'input' + item.id" value="1" />
+                                <span class="nombre">
+                                    {{ item.nombre.toUpperCase() }}
+                                </span>
+                            </label></td>
+                        <td v-else>{{ item.nombre.toUpperCase() }}</td>
                         <td> {{ "$" + item.precio_de_compra }}</td>
                         <td> {{ "$" + item.precio_de_venta }}</td>
                         <td class="centro"> <router-link :to="{ name: 'editarProducto', params: { id: item.id } }"
@@ -39,11 +55,17 @@
                 </tbody>
             </table>
         </div>
+        <div class="row mensajeVacio" v-else-if="this.filtro">
+            <h1>{{ this.mensajeFiltro }}</h1>
+        </div>
+        <div class="row mensajeVacio" v-else>
+            <h1>{{ this.mensajeLista }}</h1>
+        </div>
         <div class="body-boton-pagi row">
             <button class="btn button-anterior" v-if="anterior != null"
-                @click="obtenerDatos(anterior, filtro)">Anterior</button>
+                @click="filtrar(anterior, filtro, false)">Anterior</button>
             <button class="btn button-num" disabled v-if="anterior != null || siguiente != null">{{ page }}</button>
-            <button class="btn" v-if="siguiente != null" @click="obtenerDatos(siguiente, filtro)">Siguiente</button>
+            <button class="btn" v-if="siguiente != null" @click="filtrar(siguiente, filtro, false)">Siguiente</button>
         </div>
     </div>
 </template>
@@ -57,12 +79,17 @@ export default {
     data() {
         return {
             lista: [],
+            listP: false,
+            mensajeFiltro: "No se encontro el/los Producto/s buscado",
+            mensajeLista: "No posee productos cargados",
             tipo: "",
-            siguiente: "",
-            anterior: "",
+            siguiente: null,
+            anterior: null,
             page: 1,
             filtro: false,
             dato: "",
+            ignorar: true,
+            activado: false
         };
     },
     mounted() {
@@ -80,31 +107,25 @@ export default {
             }
             this.realizarPedido(direccion);
         },
-        filtrar(page, filtro) {
+        filtrar(page, filtro, ignorar) {
             let direccion;
-            if (this.dato == "") {
-                this.$swal('Advertencia', " Debe ingresar un valor", 'error');
+            if ((this.dato == "" || parseInt(this.dato) < 0) && ignorar) {
+                this.$swal('Advertencia', " Ingrese un valor correcto, Ej: 'cinta' o '5'", 'error');
                 return null;
             }
             if (filtro) {
                 this.filtro = true;
-                console.log(Number.isInteger(this.dato));
-                if (parseInt(this.dato) > 0) {
-                    /* Falta implementar la url en el backend*/
-                    console.log("falta implementar la API");
-                    direccion = "http://127.0.0.1:8000/producto/lista/" + page;
-                } else if (this.tipo == "0" && !parseInt(this.dato)) {
-                    /* filtrado de todos y por un nombre */
-                    direccion = "http://127.0.0.1:8000/producto/lista/Nombre/" + page + "/" + this.dato;
-                } else if (Number.parseInt(this.dato) < 0) {
-                    /* tirar un mensaje que el valor ingresado no es valido */
-                    console.log("dato ingresado no es valido");
-                    direccion = "http://127.0.0.1:8000/producto/lista/" + page;
+                if (this.tipo != "0") {
+                    /*filtrado por un tipo de producto y un nombre o codigo*/
+                    direccion = "http://127.0.0.1:8000/producto/lista/TipoYNombreOCodigo/" + page + "/" + this.tipo + "/" + this.dato;
                 } else {
-                    direccion = "http://127.0.0.1:8000/producto/lista/TipoYNombre/" + page + "/" + this.tipo + "/" + this.dato;
+                    /*filtrado por todos los tipos de producto y un nombre o codigo*/
+                    direccion = "http://127.0.0.1:8000/producto/lista/NombreOCodigo/" + page + "/" + this.dato;
                 }
             } else {
-                direccion = "http://127.0.0.1:8000/producto/lista/Tipo/" + page + "/" + this.tipo;
+                this.obtenerDatos(page);
+                this.filtro = false;
+                return null;
             }
             console.log(direccion);
             this.realizarPedido(direccion);
@@ -115,6 +136,11 @@ export default {
                 this.siguiente = response.data.siguiente;
                 this.anterior = response.data.anterior;
                 this.page = response.data.actual;
+                if (this.lista.length > 0) {
+                    this.listP = true;
+                } else {
+                    this.listP = false;
+                }
             }).catch((error) => {
                 this.$swal('Error', error.response.data.error, 'error').response
             });
@@ -136,6 +162,12 @@ export default {
                 }
             })
         },
+        activarIncrementar(activado) {
+            this.activado = activado;
+        },
+        incrementar() {
+            return null;
+        }
     }
 }
 </script>
@@ -156,7 +188,7 @@ export default {
 
 .body-limpiar {
     display: inline-block;
-    margin-left: auto;
+    margin-left: 5px;
     margin-right: auto;
     margin-top: 20px;
 }
