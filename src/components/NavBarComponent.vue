@@ -2,7 +2,7 @@
     <div class="row">
         <nav class="nav-extended blue">
             <div class="nav-wrapper">
-                <a href="#" class="brand-logo">Logo</a>
+                <img src="../assets/ferreteria.png" width="100%" height="90px" />
             </div>
             <div class="nav-content">
                 <ul class="tabs tabs-transparent margen-izq">

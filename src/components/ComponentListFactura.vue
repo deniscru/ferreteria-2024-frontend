@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="row body-lista" v-if="this.listFacturas">
-            <table class="striped">
+            <table>
                 <thead>
                     <tr class="blue cabecera">
                         <td colspan="5">LISTA DE FACTURAS</td>

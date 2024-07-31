@@ -4,7 +4,7 @@
             <div class="body-filter">
                 <button class="btn blue" @click="filtrar(1, true, true)">Buscar</button>
             </div>
-            <div class="input-field col s6">
+            <div class="input-field col s3">
                 <input id="nombre_prod" type="text" v-model="dato">
                 <label for="nombre_prod">Ingresar el Nombre o Codigo</label>
             </div>
@@ -22,6 +22,10 @@
                 <!-- se debe acomodar correctamente el boton cuando aparece-->
                 <button class="btn blue" @click="incrementar()" v-if="this.activado">Incrementar</button>
             </div>
+            <div class="input-field col s3" v-if="activado">
+                <input id="porcentaje" type="number" min="1" max="100" class="validate" required v-model="cant">
+                <label for="porcentaje" translate="no">Ingresar el porcentaje</label>
+            </div>
         </div>
         <div class="tabla" v-if="this.listP">
             <table class="striped">
@@ -31,6 +35,7 @@
                         <td>Nombre</td>
                         <td>Precio de Compra</td>
                         <td>Precio de Venta</td>
+                        <td>Fecha de Precio Actu.</td>
                         <td colspan="2">Botones </td>
                     </tr>
                 </thead>
@@ -46,6 +51,7 @@
                         <td v-else>{{ item.nombre.toUpperCase() }}</td>
                         <td> {{ "$" + item.precio_de_compra }}</td>
                         <td> {{ "$" + item.precio_de_venta }}</td>
+                        <td> {{ item.date }}</td>
                         <td class="centro"> <router-link :to="{ name: 'editarProducto', params: { id: item.id } }"
                                 class=" waves-effect waves-light-green btn blue">Editar</router-link> </td>
                         <td class="centro"> <button class="waves-effect waves-light btn red delete"
@@ -89,7 +95,8 @@ export default {
             filtro: false,
             dato: "",
             ignorar: true,
-            activado: false
+            activado: false,
+            cant: ""
         };
     },
     mounted() {
@@ -113,6 +120,7 @@ export default {
                 this.$swal('Advertencia', " Ingrese un valor correcto, Ej: 'cinta' o '5'", 'error');
                 return null;
             }
+            this.page = page;
             if (filtro) {
                 this.filtro = true;
                 if (this.tipo != "0") {
@@ -127,7 +135,6 @@ export default {
                 this.filtro = false;
                 return null;
             }
-            console.log(direccion);
             this.realizarPedido(direccion);
         },
         realizarPedido(direccion) {
@@ -166,7 +173,39 @@ export default {
             this.activado = activado;
         },
         incrementar() {
-            return null;
+            //debo incrementar los productos seleccionados en la tabla con el valor ingresado
+            if (this.cant != "") {
+                var lis = this.obtenerProdSelec();
+                var dato = {
+                    "porcentaje": this.cant,
+                    "lista": lis,
+                }
+                axios.post("http://127.0.0.1:8000/producto/actualizar/data", dato).then((response) => {
+                    this.$swal.fire({
+                        title: response.data.mensaje,
+                        confirmButtonText: 'Aceptar',
+                    }).then((result) => {
+                        console.log(result);
+                        this.obtenerDatos(this.page)
+                    })
+                }).catch((error) => { this.$swal("Error", error.response.data.error, "error") })
+            } else {
+                this.$swal.fire({
+                    title: 'Debe ingrezar un porcentaje, ej: del 1 al 100',
+                    confirmButtonText: 'Aceptar',
+                }).then((result) => {
+                    console.log(result);
+                })
+            }
+        },
+        obtenerProdSelec() {
+            var lis = [];
+            for (var prod of this.lista) {
+                if (document.getElementById("input" + prod.id).checked) {
+                    lis.push(prod.id);
+                }
+            }
+            return lis
         }
     }
 }

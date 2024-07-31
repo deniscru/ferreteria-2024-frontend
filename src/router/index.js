@@ -34,13 +34,6 @@ const routes = [
     component: () => import('../views/producto/ViewProdListL.vue'),
   },
   {
-    // se anula: se lista todos los productos en lugar de listar por el "TIPO"
-    path: '/prodLista/:id',
-    name: 'prodLista',
-    component: () => import('../views/producto/ViewProdList.vue'),
-
-  },
-  {
     path: '/nuevoProducto',
     name: "nuevoProducto",
     component: () => import('../views/producto/ViewProdForm.vue')
@@ -49,11 +42,6 @@ const routes = [
     path: '/editarProducto/:id',
     name: "editarProducto",
     component: () => import('../views/producto/ProdFormEdit.vue')
-  },
-  {
-    path: '/incrementar',
-    name: "incrementar",
-    component: () => import('../views/producto/ViewProdListIncre.vue')
   },
   {
     path: '/facturas',
@@ -69,11 +57,6 @@ const routes = [
     path: "/facturaProductos",
     name: "facturaProductos",
     component: () => import('../views/facturas/ViewFacturaListProd.vue')
-  },
-  {
-    path: '/ventaHoy',
-    name: "ventaHoy",
-    component: () => import('../views/producto/ViewProdListIncre.vue')
   },
   {
     path: '/about',
